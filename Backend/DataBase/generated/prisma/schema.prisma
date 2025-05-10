@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id      Int     @id @default(autoincrement()) // bu da bize otomatik id yapar 
+  imgID   String
+  content String? @db.VarChar(100) // String? isterse verir yada vermez yani opisyonel
+  //örnekler 
+  //isAdmin Boolean @default(false) -> var sayılan değer direk false
+  // createAt DateTime @default(now()) tarihi otomatik doldurur
+  // updateAt DateTime @updateAt -> buda schema da bir değişliklik olduğu zaman otomatik tarihi günceler
+  User    User?   @relation(fields: [userId], references: [id])
+  userId  Int?
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  userName String @db.VarChar(20) // max length 20
+  posts    Post[]
+}
+
+//npx prisma format yaptığınızda schemayı düzeneler boşluklar vs.
+//npx prisma migrate dev bu database burdaki modeleri tabloya donuiturur
+//npx prisma studio loclhost olarak website açılır we tabloları gösteriri
+//npx prisma generate buda prismaClient için gereki tipleri tanımalr autocomplte göstermek için
